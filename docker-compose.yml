@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  laravel-web:
+    image: nginx:1.18
+    # build:
+    #   context: .
+    container_name: laravel-web
+    restart: always
+    # ports:
+    #   - 8080:8080
+    working_dir: /var/www
+    volumes:
+      - ./laravel:/var/www
+      - ./deploy/vhost.conf:/etc/nginx/conf.d/default.conf
+    labels:
+      - "traefik.http.routers.laravel-web.rule=Host(`laravel.local.com`)"
+      - "traefik.http.services.laravel-web.loadbalancer.server.port=80"
+    networks:
+      - web_service
+    # command: "/usr/sbin/nginx -g 'daemon off';"
+    links:
+      - laravel-app
+
+  laravel-app:
+    # image: nginx:1.18
+    build:
+      context: .
+    container_name: laravel-app
+    restart: always
+    # ports:
+    #   - 8080:8080
+    working_dir: /var/www
+    volumes:
+      - ./laravel:/var/www
+    networks:
+      - web_service
+    # command: "top"
+
+networks:
+  web_service:
+    external: true

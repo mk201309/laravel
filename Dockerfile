@@ -1,5 +1,5 @@
 # 第一層基底
-FROM php:7.4.10-fpm-alpine
+FROM php:7.4.10-cli-alpine
 
 LABEL maintainer="mk201309@gmail.com"
 
